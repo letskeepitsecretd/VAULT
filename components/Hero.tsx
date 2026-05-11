@@ -6,10 +6,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
-  const containerRef = useRef(null);
-  const canvasRef = useRef(null);
-  const titleRef = useRef(null);
-  const subtitleRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,10 +18,10 @@ export default function Hero() {
     if (!context) return;
 
     const frameCount = 232;
-    const currentFrame = (index) => 
+    const currentFrame = (index: number) => 
       `/sequences/sequence1/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
 
-    const images = [];
+    const images: HTMLImageElement[] = [];
     const seq = { frame: 1 };
 
     for (let i = 1; i <= frameCount; i++) {
@@ -36,7 +36,7 @@ export default function Hero() {
       render();
     };
 
-    function render() {
+    function render() { if (!canvas || !context) return;
       if (images[seq.frame - 1] && images[seq.frame - 1].complete) {
         const img = images[seq.frame - 1];
         const canvasRatio = canvas.width / canvas.height;
@@ -102,7 +102,7 @@ export default function Hero() {
       );
     });
 
-    const handleResize = () => {
+    const handleResize = () => { if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       render();

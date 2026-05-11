@@ -46,7 +46,7 @@ export default function ProductShowcase({ title, subtitle, price, sequenceDir, f
       render();
     };
 
-    function render() {
+    function render() { if (!canvas || !context) return;
       if (images[seq.frame - 1] && images[seq.frame - 1].complete) {
         const img = images[seq.frame - 1];
         const canvasRatio = canvas.width / canvas.height;
@@ -97,7 +97,7 @@ export default function ProductShowcase({ title, subtitle, price, sequenceDir, f
       });
     });
 
-    const handleResize = () => {
+    const handleResize = () => { if (!canvas) return;
       const parent = canvas.parentElement;
       if (parent) {
         canvas.width = parent.clientWidth;
