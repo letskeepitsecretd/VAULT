@@ -24,16 +24,28 @@ export default function Hero() {
     const images: HTMLImageElement[] = [];
     const seq = { frame: 1 };
 
-    for (let i = 1; i <= frameCount; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
-      images.push(img);
-    }
+    // Load first image immediately
+    const firstImg = new Image();
+    firstImg.src = currentFrame(1);
+    images.push(firstImg);
 
-    images[0].onload = () => {
+    firstImg.onload = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       render();
+      
+      // Progressively load the rest so we don't crash mobile browsers
+      let i = 2;
+      const loadNext = () => {
+        if (i <= frameCount) {
+          const img = new Image();
+          img.src = currentFrame(i);
+          images.push(img);
+          i++;
+          setTimeout(loadNext, 10); // Throttle loading
+        }
+      };
+      loadNext();
     };
 
     function render() { if (!canvas || !context) return;
