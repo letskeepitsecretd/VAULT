@@ -18,7 +18,7 @@ export default function ShoeShowcase() {
     const context = canvas.getContext('2d');
     if (!context) return;
 
-    const frameCount = 150; // Capped to exactly 5 seconds worth of frames (assuming 30fps)
+    const frameCount = 150;
     const currentFrame = (index: number) => 
       `/sequences/shoe/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
 
@@ -35,7 +35,6 @@ export default function ShoeShowcase() {
       canvas.height = window.innerHeight;
       render();
       
-      // Progressively load the rest so we don't crash mobile browsers
       let i = 2;
       const loadNext = () => {
         if (i <= frameCount) {
@@ -43,13 +42,14 @@ export default function ShoeShowcase() {
           img.src = currentFrame(i);
           images.push(img);
           i++;
-          setTimeout(loadNext, 10); // Throttle loading
+          setTimeout(loadNext, 10);
         }
       };
       loadNext();
     };
 
-    function render() { if (!canvas || !context) return;
+    function render() {
+      if (!canvas || !context) return;
       if (images[seq.frame - 1] && images[seq.frame - 1].complete) {
         const img = images[seq.frame - 1];
         const canvasRatio = canvas.width / canvas.height;
@@ -85,23 +85,19 @@ export default function ShoeShowcase() {
         }
       });
 
-      // 1-second delay for consistency
       tl.to({}, { duration: 1 });
 
-      // 1. Initial State: Title "SHOES" fades and zooms out (scales UP to 2)
       tl.to(titleRef.current, {
         opacity: 0,
         scale: 2, 
         filter: "blur(30px)",
         duration: 1.5,
       })
-      // 2. Video Transition: The shoe enters with a smooth scale-up
       .fromTo(canvasRef.current, 
         { scale: 0.6, opacity: 0 }, 
         { scale: 1, opacity: 1, duration: 2 }, 
         "-=1"
       )
-      // Play the shoe sequence concurrently
       .to(seq, {
         frame: frameCount,
         snap: "frame",
@@ -109,7 +105,6 @@ export default function ShoeShowcase() {
         duration: 2.5, 
         onUpdate: render,
       }, "-=2")
-      // 3. Product Info Reveal: Details slide in from the left
       .fromTo(contentRef.current,
         { x: -100, opacity: 0 },
         { x: 0, opacity: 1, duration: 1.5 },
@@ -117,7 +112,8 @@ export default function ShoeShowcase() {
       );
     });
 
-    const handleResize = () => { if (!canvas) return;
+    const handleResize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       render();
@@ -139,63 +135,63 @@ export default function ShoeShowcase() {
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
-      {/* Cinematic Dark Overlay (Flipped for right-side content) */}
-      <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-transparent z-10 pointer-events-none" />
+      {/* Cinematic Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-black via-transparent to-transparent z-10 pointer-events-none" />
 
-      {/* 1. The Big Title (Visible First) - Absolute Bulletproof Centering */}
+      {/* Title */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none flex justify-center items-center w-full h-full">
         <h2 
           ref={titleRef}
-          className="text-[15vw] font-black tracking-tighter text-white/90 uppercase whitespace-nowrap text-center"
+          className="text-[18vw] md:text-[15vw] font-black tracking-tighter text-white/90 uppercase whitespace-nowrap text-center"
         >
           Shoes
         </h2>
       </div>
 
-      {/* 2. Product Details (Reveals on Scroll) */}
-      <div className="relative z-30 h-full flex items-center justify-end px-10 md:px-20 pointer-events-none">
-        <div ref={contentRef} className="max-w-xl space-y-8 text-right flex flex-col items-end opacity-0 pointer-events-auto">
-          <div className="space-y-2">
-            <span className="text-cyan-400 font-bold tracking-[0.3em] uppercase text-sm">Velocity Line</span>
-            <h3 className="text-5xl md:text-7xl font-bold text-white uppercase leading-none">Aero-Step G1</h3>
-            <p className="text-gray-400 text-lg max-w-md ml-auto">
+      {/* Product Details */}
+      <div className="relative z-30 h-full flex items-end md:items-center justify-center md:justify-end px-5 md:px-20 pb-20 md:pb-0 pointer-events-none">
+        <div ref={contentRef} className="max-w-xl space-y-4 md:space-y-8 text-center md:text-right flex flex-col items-center md:items-end opacity-0 pointer-events-auto">
+          <div className="space-y-1 md:space-y-2">
+            <span className="text-cyan-400 font-bold tracking-[0.3em] uppercase text-[10px] md:text-sm">Velocity Line</span>
+            <h3 className="text-3xl md:text-7xl font-bold text-white uppercase leading-none">Aero-Step G1</h3>
+            <p className="text-gray-400 text-sm md:text-lg max-w-md ml-auto">
               Defy gravity with our proprietary nitrogen-infused cushioning. Maximum energy return, minimum weight.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 text-white/70 w-full">
-            <div className="flex items-center justify-end gap-3">
-              <span className="text-xs uppercase tracking-widest">Ultra Light</span>
-              <Wind className="text-cyan-400 w-5 h-5" />
+          <div className="grid grid-cols-3 gap-3 md:grid-cols-2 md:gap-6 text-white/70 w-full">
+            <div className="flex items-center justify-center md:justify-end gap-2 md:gap-3">
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">Ultra Light</span>
+              <Wind className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
             </div>
-            <div className="flex items-center justify-end gap-3">
-              <span className="text-xs uppercase tracking-widest">Energy Return</span>
-              <Zap className="text-cyan-400 w-5 h-5" />
+            <div className="flex items-center justify-center md:justify-end gap-2 md:gap-3">
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">Energy Return</span>
+              <Zap className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
             </div>
-            <div className="flex items-center justify-end gap-3 col-span-2">
-              <span className="text-xs uppercase tracking-widest">Breathable Mesh</span>
-              <Cloud className="text-cyan-400 w-5 h-5" />
+            <div className="flex items-center justify-center md:justify-end gap-2 md:gap-3">
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">Breathable</span>
+              <Cloud className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
             </div>
           </div>
 
-          <div className="flex items-center gap-8 pt-6">
-            <div className="flex flex-col items-end">
-              <span className="text-gray-500 text-xs uppercase tracking-widest">Price</span>
-              <span className="text-3xl font-bold text-white">$249.00</span>
+          <div className="flex items-center gap-4 md:gap-8 pt-2 md:pt-6">
+            <div className="flex flex-col items-center md:items-end">
+              <span className="text-gray-500 text-[10px] md:text-xs uppercase tracking-widest">Price</span>
+              <span className="text-xl md:text-3xl font-bold text-white">$249.00</span>
             </div>
             <button 
               onClick={() => addToCart({ id: 'shoe-g1', name: 'Aero-Step G1', price: 249, category: 'Shoes', image: '/shoe-thumb.jpg' })}
-              className="flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-cyan-400 transition-all transform hover:scale-105"
+              className="flex items-center gap-2 md:gap-3 bg-white text-black px-6 md:px-10 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-cyan-400 transition-all transform hover:scale-105"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={16} className="md:w-5 md:h-5" />
               ADD TO CART
             </button>
           </div>
         </div>
       </div>
 
-      {/* Decorative Element */}
-      <div className="absolute left-10 bottom-10 z-30 opacity-20 pointer-events-none">
+      {/* Decorative Element - hidden on mobile */}
+      <div className="absolute left-10 bottom-10 z-30 opacity-20 pointer-events-none hidden md:block">
         <span className="text-8xl font-bold text-white select-none">02</span>
       </div>
     </section>

@@ -43,13 +43,14 @@ export default function WatchShowcase() {
           img.src = currentFrame(i);
           images.push(img);
           i++;
-          setTimeout(loadNext, 10); // Throttle loading
+          setTimeout(loadNext, 10);
         }
       };
       loadNext();
     };
 
-    function render() { if (!canvas || !context) return;
+    function render() {
+      if (!canvas || !context) return;
       if (images[seq.frame - 1] && images[seq.frame - 1].complete) {
         const img = images[seq.frame - 1];
         const canvasRatio = canvas.width / canvas.height;
@@ -85,7 +86,6 @@ export default function WatchShowcase() {
         }
       });
 
-      // Added 1 duration unit delay before any transitions begin
       tl.to({}, { duration: 1 }); 
 
       tl.to(titleRef.current, {
@@ -113,7 +113,8 @@ export default function WatchShowcase() {
       );
     });
 
-    const handleResize = () => { if (!canvas) return;
+    const handleResize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       render();
@@ -134,53 +135,59 @@ export default function WatchShowcase() {
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent z-10 pointer-events-none" />
+      
+      {/* Title */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none flex justify-center items-center w-full h-full">
         <h2 
           ref={titleRef}
-          className="text-[12vw] font-black text-white/90 uppercase whitespace-nowrap text-center"
+          className="text-[16vw] md:text-[12vw] font-black text-white/90 uppercase whitespace-nowrap text-center"
           style={{ letterSpacing: '0.1em', paddingLeft: '0.1em', textShadow: '0 0 30px rgba(255, 255, 255, 0.2)' }}
         >
           WATCHES
         </h2>
       </div>
-      <div className="relative z-30 h-full flex items-center px-10 md:px-20 pointer-events-none">
-        <div ref={contentRef} className="max-w-xl space-y-8 opacity-0 pointer-events-auto">
-          <div className="space-y-2">
-            <span className="text-cyan-400 font-bold tracking-[0.3em] uppercase text-sm">Chronograph Series</span>
-            <h3 className="text-5xl md:text-7xl font-bold text-white uppercase leading-none">Vault V-1</h3>
-            <p className="text-gray-400 text-lg max-w-md">
+
+      {/* Product Details */}
+      <div className="relative z-30 h-full flex items-end md:items-center px-5 md:px-20 pb-24 md:pb-0 pointer-events-none">
+        <div ref={contentRef} className="max-w-xl space-y-4 md:space-y-8 opacity-0 pointer-events-auto">
+          <div className="space-y-1 md:space-y-2">
+            <span className="text-cyan-400 font-bold tracking-[0.3em] uppercase text-[10px] md:text-sm">Chronograph Series</span>
+            <h3 className="text-3xl md:text-7xl font-bold text-white uppercase leading-none">Vault V-1</h3>
+            <p className="text-gray-400 text-sm md:text-lg max-w-md">
               Engineered with aerospace-grade steel and a sapphire crystal interface. Precision redefined.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-6 text-white/70">
-            <div className="flex items-center gap-3">
-              <Cpu className="text-cyan-400 w-5 h-5" />
-              <span className="text-xs uppercase tracking-widest">Swiss Movement</span>
+          <div className="grid grid-cols-3 md:grid-cols-2 gap-3 md:gap-6 text-white/70">
+            <div className="flex items-center gap-2 md:gap-3">
+              <Cpu className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">Swiss Movement</span>
             </div>
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="text-cyan-400 w-5 h-5" />
-              <span className="text-xs uppercase tracking-widest">Sapphire Glass</span>
+            <div className="flex items-center gap-2 md:gap-3">
+              <ShieldCheck className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">Sapphire Glass</span>
             </div>
-            <div className="flex items-center gap-3">
-              <Waves className="text-cyan-400 w-5 h-5" />
-              <span className="text-xs uppercase tracking-widest">10 ATM Water</span>
+            <div className="flex items-center gap-2 md:gap-3">
+              <Waves className="text-cyan-400 w-4 h-4 md:w-5 md:h-5" />
+              <span className="text-[10px] md:text-xs uppercase tracking-widest">10 ATM Water</span>
             </div>
           </div>
-          <div className="flex items-center gap-8 pt-6">
+          <div className="flex items-center gap-4 md:gap-8 pt-2 md:pt-6">
             <div className="flex flex-col">
-              <span className="text-gray-500 text-xs uppercase tracking-widest">Price</span>
-              <span className="text-3xl font-bold text-white">$799.00</span>
+              <span className="text-gray-500 text-[10px] md:text-xs uppercase tracking-widest">Price</span>
+              <span className="text-xl md:text-3xl font-bold text-white">$799.00</span>
             </div>
             <button 
               onClick={() => addToCart({ id: 'watch-v1', name: 'Vault V-1 Watch', price: 799, category: 'Watches', image: '/watch-thumb.jpg' })}
-              className="flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-cyan-400 transition-all transform hover:scale-105"
+              className="flex items-center gap-2 md:gap-3 bg-white text-black px-6 md:px-10 py-3 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-cyan-400 transition-all transform hover:scale-105"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={16} className="md:w-5 md:h-5" />
               ADD TO CART
             </button>
           </div>
         </div>
       </div>
+
+      {/* Decorative - hidden on mobile */}
       <div className="absolute right-10 top-1/2 -translate-y-1/2 z-30 hidden md:block">
         <div className="flex flex-col gap-4 items-center">
           <div className="w-1 h-1 rounded-full bg-white/20" />

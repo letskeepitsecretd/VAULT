@@ -36,7 +36,6 @@ export default function AudioShowcase() {
       canvas.height = window.innerHeight;
       render();
       
-      // Progressively load the rest so we don't crash mobile browsers
       let i = 2;
       const loadNext = () => {
         if (i <= frameCount) {
@@ -44,13 +43,14 @@ export default function AudioShowcase() {
           img.src = currentFrame(i);
           images.push(img);
           i++;
-          setTimeout(loadNext, 10); // Throttle loading
+          setTimeout(loadNext, 10);
         }
       };
       loadNext();
     };
 
-    function render() { if (!canvas || !context) return;
+    function render() {
+      if (!canvas || !context) return;
       if (images[seq.frame - 1] && images[seq.frame - 1].complete) {
         const img = images[seq.frame - 1];
         const canvasRatio = canvas.width / canvas.height;
@@ -79,30 +79,26 @@ export default function AudioShowcase() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=350%", // Longest scroll to appreciate the "exploded" detail
+          end: "+=350%",
           scrub: 1,
           pin: true,
           anticipatePin: 1,
         }
       });
 
-      // Added 1 duration unit delay before any transitions begin for consistency
       tl.to({}, { duration: 1 });
 
-      // 1. Initial State: Title "AUDIO" stretches and fades
       tl.to(titleRef.current, {
         opacity: 0,
         letterSpacing: "5em",
         filter: "blur(20px)",
         duration: 1.5,
       })
-      // 2. Video Transition: The components explode outward (scale down from 1.2 to 1)
       .fromTo(canvasRef.current, 
         { scale: 1.2, opacity: 0 }, 
         { scale: 1, opacity: 1, duration: 2 }, 
         "-=1"
       )
-      // Play the headphones sequence concurrently
       .to(seq, {
         frame: frameCount,
         snap: "frame",
@@ -110,13 +106,11 @@ export default function AudioShowcase() {
         duration: 2.5, 
         onUpdate: render,
       }, "-=2")
-      // 3. Feature Labels: Floating glassmorphism cards appear
       .fromTo(".feature-label", 
         { y: 40, opacity: 0 }, 
         { y: 0, opacity: 1, stagger: 0.3, duration: 1.5 },
         "-=1.5"
       )
-      // 4. Bottom Buy Bar: Slides up from the bottom
       .fromTo(buyBarRef.current,
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, duration: 1 },
@@ -124,7 +118,8 @@ export default function AudioShowcase() {
       );
     });
 
-    const handleResize = () => { if (!canvas) return;
+    const handleResize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       render();
@@ -146,70 +141,70 @@ export default function AudioShowcase() {
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
-      {/* 1. The Big Title (Visible First) - Absolute Bulletproof Centering */}
+      {/* Title */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none flex justify-center items-center w-full h-full">
         <h2 
           ref={titleRef}
-          className="text-[12vw] font-black tracking-[0.1em] text-white/90 uppercase whitespace-nowrap text-center"
+          className="text-[16vw] md:text-[12vw] font-black tracking-[0.1em] text-white/90 uppercase whitespace-nowrap text-center"
         >
           Audio
         </h2>
       </div>
 
-      {/* 2. Floating Feature Labels (Revealed during explosion) */}
+      {/* Floating Feature Labels */}
       <div ref={labelsRef} className="absolute inset-0 z-30 pointer-events-none">
-        {/* Top Left Label */}
-        <div className="feature-label absolute top-[20%] left-[15%] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-xl">
-            <Volume2 className="text-cyan-400 mb-2" size={20} />
-            <p className="text-white font-bold text-xs uppercase tracking-tighter">Spatial Audio 2.0</p>
+        {/* Top Left */}
+        <div className="feature-label absolute top-[15%] left-[5%] md:top-[20%] md:left-[15%] bg-white/5 backdrop-blur-xl border border-white/10 p-2 md:p-4 rounded-xl">
+            <Volume2 className="text-cyan-400 mb-1 md:mb-2" size={16} />
+            <p className="text-white font-bold text-[10px] md:text-xs uppercase tracking-tighter">Spatial Audio 2.0</p>
         </div>
         
-        {/* Bottom Left Label */}
-        <div className="feature-label absolute bottom-[30%] left-[10%] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-xl">
-            <Mic className="text-cyan-400 mb-2" size={20} />
-            <p className="text-white font-bold text-xs uppercase tracking-tighter">Studio Quality Mics</p>
+        {/* Bottom Left */}
+        <div className="feature-label absolute bottom-[35%] left-[3%] md:bottom-[30%] md:left-[10%] bg-white/5 backdrop-blur-xl border border-white/10 p-2 md:p-4 rounded-xl">
+            <Mic className="text-cyan-400 mb-1 md:mb-2" size={16} />
+            <p className="text-white font-bold text-[10px] md:text-xs uppercase tracking-tighter">Studio Mics</p>
         </div>
 
-        {/* Top Right Label */}
-        <div className="feature-label absolute top-[25%] right-[15%] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-xl">
-            <Bluetooth className="text-cyan-400 mb-2" size={20} />
-            <p className="text-white font-bold text-xs uppercase tracking-tighter">Ultra Low Latency</p>
+        {/* Top Right */}
+        <div className="feature-label absolute top-[18%] right-[5%] md:top-[25%] md:right-[15%] bg-white/5 backdrop-blur-xl border border-white/10 p-2 md:p-4 rounded-xl">
+            <Bluetooth className="text-cyan-400 mb-1 md:mb-2" size={16} />
+            <p className="text-white font-bold text-[10px] md:text-xs uppercase tracking-tighter">Low Latency</p>
         </div>
 
-        {/* Bottom Right Label */}
-        <div className="feature-label absolute bottom-[25%] right-[10%] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-xl">
-            <Battery className="text-cyan-400 mb-2" size={20} />
-            <p className="text-white font-bold text-xs uppercase tracking-tighter">48H Battery Life</p>
+        {/* Bottom Right */}
+        <div className="feature-label absolute bottom-[30%] right-[3%] md:bottom-[25%] md:right-[10%] bg-white/5 backdrop-blur-xl border border-white/10 p-2 md:p-4 rounded-xl">
+            <Battery className="text-cyan-400 mb-1 md:mb-2" size={16} />
+            <p className="text-white font-bold text-[10px] md:text-xs uppercase tracking-tighter">48H Battery</p>
         </div>
       </div>
 
-      {/* 3. Bottom Buy Bar (Final Reveal) */}
+      {/* Bottom Buy Bar */}
       <div 
         ref={buyBarRef}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-4xl bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 opacity-0 pointer-events-auto"
+        className="absolute bottom-4 md:bottom-10 left-1/2 -translate-x-1/2 z-40 w-[95%] md:w-[90%] max-w-4xl bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 opacity-0 pointer-events-auto"
       >
-        <div className="flex flex-col">
-          <h3 className="text-2xl font-bold text-white uppercase italic tracking-tighter">Sonic-X Headphones</h3>
-          <p className="text-cyan-400 text-xs font-bold tracking-widest uppercase">Pure Sound Geometry</p>
+        <div className="flex flex-col items-center md:items-start">
+          <h3 className="text-lg md:text-2xl font-bold text-white uppercase italic tracking-tighter">Sonic-X Headphones</h3>
+          <p className="text-cyan-400 text-[10px] md:text-xs font-bold tracking-widest uppercase">Pure Sound Geometry</p>
         </div>
 
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-4 md:gap-10">
           <div className="text-right">
             <span className="block text-gray-500 text-[10px] uppercase tracking-widest leading-none">Investment</span>
-            <span className="text-3xl font-black text-white">$599.00</span>
+            <span className="text-xl md:text-3xl font-black text-white">$599.00</span>
           </div>
           <button 
             onClick={() => addToCart({ id: 'audio-x', name: 'Sonic-X Headphones', price: 599, category: 'Audio', image: '/audio-thumb.jpg' })}
-            className="group relative flex items-center gap-3 bg-cyan-500 text-black px-10 py-4 rounded-2xl font-bold transition-all hover:bg-white overflow-hidden"
+            className="group relative flex items-center gap-2 md:gap-3 bg-cyan-500 text-black px-6 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-sm md:text-base transition-all hover:bg-white overflow-hidden"
           >
-            <ShoppingCart size={20} className="relative z-10" />
+            <ShoppingCart size={16} className="relative z-10 md:w-5 md:h-5" />
             <span className="relative z-10">ORDER NOW</span>
             <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </button>
         </div>
       </div>
 
-      {/* Ambient Lighting Background */}
+      {/* Ambient Lighting */}
       <div className="absolute top-0 left-1/4 w-[50%] h-[50%] bg-cyan-500/5 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[50%] h-[50%] bg-blue-500/5 blur-[150px] pointer-events-none" />
     </section>
